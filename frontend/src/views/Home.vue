@@ -5,6 +5,7 @@
       <p>Width:{{this.$store.state.client.width}}</p>
       <p>Weight:{{this.$store.state.client.height}}</p>
     </div>
+    <train-react></train-react>
   </div>
 </template>
 
