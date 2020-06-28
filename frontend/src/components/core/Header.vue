@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <el-row type="flex" class="row-bg" justify="space-between">
+    <el-row type="flex" class="row-bg" justify="space-between" align="middle">
       <el-col :span="4" class="hidden-sm-and-down">
         <div class="logo">
           LisztSpace
@@ -53,6 +53,7 @@ export default {
 
 .header
   width 100%
-  height 4rem
   background-color #fff
+  padding-top 1rem
+  padding-bottom 1rem
 </style>
