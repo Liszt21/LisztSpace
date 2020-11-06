@@ -7,22 +7,38 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import styled from "styled-components";
+
+
+import Home from "./views/Home";
+import Tools from "./views/Tools";
+import About from "./views/About";
+
+const NavBar = styled.div`
+  margin: 0;
+  display: flex;
+  font-weight: bold;
+  flex-flow: row, nowrap;
+  width: 100%;
+  justify-content: space-evenly;
+
+  a:hover {
+    color: white;
+  }
+`;
+const Main = styled.div`
+  width: 100%;
+  text-align: center;
+`
 
 function App() {
   return (
     <Router>
-      <div>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-        </ul>
+        <NavBar>
+          <Link to="/">Home</Link>
+          <Link to="/tools">Tools</Link>
+          <Link to="/about">About</Link>
+        </NavBar>
 
         <hr />
 
@@ -33,43 +49,20 @@ function App() {
           you have multiple routes, but you want only one
           of them to render at a time
         */}
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-        </Switch>
-      </div>
+        <Main>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/tools">
+              <Tools />
+            </Route>
+            <Route path="/about">
+              <About />
+            </Route>
+          </Switch>
+        </Main>
     </Router>
-  );
-}
-
-function Home() {
-  return (
-    <div>
-      <h2>Home</h2>
-    </div>
-  );
-}
-
-function About() {
-  return (
-    <div>
-      <h2>About</h2>
-    </div>
-  );
-}
-
-function Dashboard() {
-  return (
-    <div>
-      <h2>Dashboard</h2>
-    </div>
   );
 }
 
