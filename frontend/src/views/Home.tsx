@@ -18,10 +18,8 @@ interface IQSState {
 	now: Date;
 }
 
-interface IQSProps {}
-
-interface IQSTimeProps {
-	time: Date;
+interface IQSTimeState {
+	now: Date;
 }
 
 interface IQSActionProps {
@@ -29,25 +27,35 @@ interface IQSActionProps {
 }
 
 enum EQSAction {
-	start = 1,
-	stop,
-	pause,
-	cancel
+	Start, Stop, Pause, Cancel
 }
 class QuantifiedSelf extends React.Component {
-	state: IQSState;
+	state!: IQSState;
 	interval?: number;
-	constructor(props: IQSProps) {
-		super(props);
-		this.state = { now: new Date() };
-	}
 	render() {
 		return (
 			<div>
-				<QSTime time={this.state.now}/>
+				<QSTime />
 				<QSAction action={(action: EQSAction) => console.log(EQSAction[action])}
 					/>
 			</div>
+		)
+	}
+	
+}
+
+class QSTime extends React.Component {
+	state!: IQSTimeState;
+	interval?: number;
+	
+	constructor(props: any) {
+		super(props);
+		this.state = { now: new Date() }
+	}
+
+	render() {
+		return (
+			<p>{dateFormat(this.state.now)}</p>
 		)
 	}
 	componentDidMount() {
@@ -58,19 +66,15 @@ class QuantifiedSelf extends React.Component {
 	}
 }
 
-function QSTime(props: IQSTimeProps) {
-	return (
-		<p>{dateFormat(props.time)}</p>
-	)
-}
-
 function QSAction(props: IQSActionProps) {
 	return (
 		<div>
-			<button onClick={() => props.action(1)}>Start</button>
-			<button onClick={() => props.action(2)}>Stop</button>
-			<button onClick={() => props.action(3)}>Pause</button>
-			<button onClick={() => props.action(4)}>Cancel</button>
+			{Object.keys(EQSAction)
+				.filter(k => typeof( EQSAction[k as any]) === "number")
+				.map((item) => {
+					return <button onClick={() =>
+						props.action(item)} key={item}>{item}</button>}
+			)}
 		</div>
 	)
 }
