@@ -34,34 +34,34 @@ const Main = styled.div`
 function App() {
   return (
     <Router>
-        <NavBar>
-          <Link to="/">Home</Link>
-          <Link to="/tools">Tools</Link>
-          <Link to="/about">About</Link>
-        </NavBar>
+      <NavBar>
+        <Link to="/">Home</Link>
+        <Link to="/tools">Tools</Link>
+        <Link to="/about">About</Link>
+      </NavBar>
 
-        <hr />
+      <hr />
 
-        {/*
+      {/*
           A <Switch> looks through all its children <Route>
           elements and renders the first one whose path
           matches the current URL. Use a <Switch> any time
           you have multiple routes, but you want only one
           of them to render at a time
         */}
-        <Main>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/tools">
-              <Tools />
-            </Route>
-            <Route path="/about">
-              <About />
-            </Route>
-          </Switch>
-        </Main>
+      <Main>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/tools">
+            <Tools />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
+        </Switch>
+      </Main>
     </Router>
   );
 }
