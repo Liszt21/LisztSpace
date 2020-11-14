@@ -2,38 +2,39 @@ import React from "react";
 import { dateFormat } from "../utils";
 import styled from "styled-components";
 
-interface QSRecordItem {
+interface RecordItem {
 	start: Date;
 	end?: Date;
 	tags?: string[];
 	detail?: string;
 }
-interface QSRecords {
-  finished: QSRecordItem[];
-  active: QSRecordItem[];
+
+interface Records {
+  finished: RecordItem[];
+  active: RecordItem[];
 }
 
-interface QSState {
-  records: QSRecords;
+interface State {
+  records: Records;
 }
 
-interface QSTimeState {
+interface TimeState {
 	now: Date;
 }
 
-interface QSActionProps {
+interface ActionProps {
 	action: Function;
 }
 
-interface QSBoardProps {
-  records: QSRecordItem[];
+interface BoardProps {
+  records: RecordItem[];
 }
 
-enum EQSAction {
+enum EAction {
 	Start, Stop, Pause, Cancel
 }
 
-const QSWrapper = styled.div`
+const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
 
@@ -50,7 +51,7 @@ const QSWrapper = styled.div`
 `
 
 class QuantifiedSelf extends React.Component {
-	state!: QSState;
+	state!: State;
   interval?: number;
 
   constructor(props: any) {
@@ -63,18 +64,17 @@ class QuantifiedSelf extends React.Component {
         finished: []
       }
     }
-
     this.newRecord = this.newRecord.bind(this);
   }
 
 	render() {
 		return (
-			<QSWrapper>
-				<QSTime />
-        <QSBoard records={this.state.records.active} />
-				<QSAction action={this.newRecord}
+			<Wrapper>
+				<Time />
+        <Board records={this.state.records.active} />
+				<Action action={this.newRecord}
 					/>
-			</QSWrapper>
+			</Wrapper>
 		)
 	}
   
@@ -89,8 +89,8 @@ class QuantifiedSelf extends React.Component {
   }
 }
 
-class QSTime extends React.Component {
-	state!: QSTimeState;
+class Time extends React.Component {
+	state!: TimeState;
 	interval?: number;
 	
 	constructor(props: any) {
@@ -113,11 +113,11 @@ class QSTime extends React.Component {
 	}
 }
 
-function QSAction(props: QSActionProps) {
+function Action(props: ActionProps) {
 	return (
 		<div className="qs-action">
-			{Object.keys(EQSAction)
-				.filter(k => typeof( EQSAction[k as any]) === "number")
+			{Object.keys(EAction)
+				.filter(k => typeof( EAction[k as any]) === "number")
 				.map((item) => {
 					return <button onClick={() =>
 						props.action(item)} key={item}>{item}</button>}
@@ -126,7 +126,7 @@ function QSAction(props: QSActionProps) {
 	)
 }
 
-function QSBoard(props: QSBoardProps) {
+function Board(props: BoardProps) {
   return (
     <div className="qs-board">
       {
