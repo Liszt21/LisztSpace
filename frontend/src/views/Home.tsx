@@ -9,13 +9,8 @@ interface RecordItem {
 	detail?: string;
 }
 
-interface Records {
-  finished: RecordItem[];
-  active: RecordItem[];
-}
-
 interface State {
-  records: Records;
+  records: RecordItem[];
 }
 
 interface TimeState {
@@ -57,12 +52,9 @@ class QuantifiedSelf extends React.Component {
   constructor(props: any) {
     super(props);
     this.state = { 
-      records: {
-        active: [{
-          start: new Date()
-        }],
-        finished: []
-      }
+      records: [{
+        start: new Date()
+      }]
     }
     this.newRecord = this.newRecord.bind(this);
   }
@@ -71,21 +63,17 @@ class QuantifiedSelf extends React.Component {
 		return (
 			<Wrapper>
 				<Time />
-        <Board records={this.state.records.active} />
-				<Action action={this.newRecord}
-					/>
+        <Board records={this.state.records} />
+				<Action action={this.newRecord} />
 			</Wrapper>
 		)
 	}
   
   newRecord(e: any) {
-    let active = this.state.records.active;
-    active.push({
+    this.state.records.push({
       start: new Date(),
     })
-    this.setState({records: {
-      active: active
-    }})
+    this.setState({records: this.state.records})
   }
 }
 
@@ -131,7 +119,7 @@ function Board(props: BoardProps) {
     <div className="qs-board">
       {
         props.records.map(record => {
-          return <p>1</p>
+          return <p>{+new Date() - record.start.getTime()}</p>
         })
       }
     </div>
