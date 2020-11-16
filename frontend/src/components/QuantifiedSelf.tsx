@@ -63,7 +63,7 @@ class QuantifiedSelf extends React.Component {
 		return (
 			<Wrapper>
 				<Time />
-        		<Board records={this.state.records} />
+        <Board records={this.state.records} />
 				<Action action={this.newRecord} />
 			</Wrapper>
 		)
@@ -119,10 +119,22 @@ function Board(props: BoardProps) {
     <div className="qs-board">
       {
         props.records.map(record => {
-          return <p>{+new Date() - record.start.getTime()}</p>
+          return <BoardItem start={record.start} />
         })
       }
     </div>
+  )
+}
+
+function BoardItem(props: RecordItem) {
+  const time = (+new Date() - props.start.getTime())/1000;
+  const h = (time / 3600).toFixed(0);
+  const m = (time % 3600 / 60).toFixed(0);
+  const s = (time % 60 ).toFixed(0);
+  const message = h + ":" + m + ":" + s
+
+  return (
+    <div>{message}</div>
   )
 }
 
