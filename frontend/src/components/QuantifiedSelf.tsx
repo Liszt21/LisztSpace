@@ -1,5 +1,5 @@
-import React from "react";
-import { dateFormat } from "../utils";
+import React, { useEffect, useState } from "react";
+import { dateFormat, useInterval } from "../utils";
 import styled from "styled-components";
 
 interface RecordItem {
@@ -127,7 +127,12 @@ function Board(props: BoardProps) {
 }
 
 function BoardItem(props: RecordItem) {
-  const time = (+new Date() - props.start.getTime())/1000;
+  const [time, setTime] = useState((+new Date() - props.start.getTime())/1000)
+  
+  useInterval(() => {
+    setTime(time => time + 1)
+  }, 1000)
+
   const h = (time / 3600).toFixed(0);
   const m = (time % 3600 / 60).toFixed(0);
   const s = (time % 60 ).toFixed(0);
