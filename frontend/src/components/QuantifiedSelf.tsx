@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { dateFormat, useInterval } from "../utils";
+import React from "react";
+import { dateFormat } from "../utils";
 import styled from "styled-components";
 
 interface RecordItem {
@@ -11,9 +11,10 @@ interface RecordItem {
 
 interface State {
   records: RecordItem[];
+  now: Date;
 }
 
-interface TimeState {
+interface TimeProps {
 	now: Date;
 }
 
@@ -23,6 +24,12 @@ interface ActionProps {
 
 interface BoardProps {
   records: RecordItem[];
+  now: Date;
+}
+
+interface BoardItemProps {
+  start: Date;
+  now: Date;
 }
 
 enum EAction {
@@ -54,7 +61,8 @@ class QuantifiedSelf extends React.Component {
     this.state = { 
       records: [{
         start: new Date()
-      }]
+      }],
+      now: new Date()
     }
     this.newRecord = this.newRecord.bind(this);
   }
@@ -62,8 +70,8 @@ class QuantifiedSelf extends React.Component {
 	render() {
 		return (
 			<Wrapper>
-				<Time />
-        <Board records={this.state.records} />
+				<Time now={this.state.now} />
+        <Board records={this.state.records} now={this.state.now} />
 				<Action action={this.newRecord} />
 			</Wrapper>
 		)
@@ -75,30 +83,20 @@ class QuantifiedSelf extends React.Component {
     })
     this.setState({records: this.state.records})
   }
-}
 
-class Time extends React.Component {
-	state!: TimeState;
-	interval?: number;
-	
-	constructor(props: any) {
-		super(props);
-		this.state = { now: new Date() }
-	}
-
-	render() {
-		return (
-			<div className="qs-time">{dateFormat(this.state.now)}</div>
-		)
-  }
-  
 	componentDidMount() {
-		this.interval = setInterval(() => {this.setState({ now: new Date() });}, 100);
+		this.interval = setInterval(() => {this.setState({ now: new Date() });}, 1000);
   }
   
 	componentWillUnmount() {
 		clearInterval(this.interval);
 	}
+}
+
+function Time(props: TimeProps) {
+  return (
+			<div className="qs-time">{dateFormat(props.now)}</div>
+  )
 }
 
 function Action(props: ActionProps) {
@@ -119,20 +117,15 @@ function Board(props: BoardProps) {
     <div className="qs-board">
       {
         props.records.map(record => {
-          return <BoardItem start={record.start} />
+          return <BoardItem start={record.start} now={props.now} />
         })
       }
     </div>
   )
 }
 
-function BoardItem(props: RecordItem) {
-  const [time, setTime] = useState((+new Date() - props.start.getTime())/1000)
-  
-  useInterval(() => {
-    setTime(time => time + 1)
-  }, 1000)
-
+function BoardItem(props: BoardItemProps) {
+  const time = (props.now.getTime() - props.start.getTime()) / 1000
   const h = (time / 3600).toFixed(0);
   const m = (time % 3600 / 60).toFixed(0);
   const s = (time % 60 ).toFixed(0);
