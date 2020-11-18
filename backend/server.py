@@ -1,10 +1,17 @@
-from flask import Flask
+from app import create_app
+from app.extensions import db
+from config import Config
 
-app = Flask(__name__)
+app = create_app(Config)
 
 @app.route('/')
-def hello_world():
+def index():
     return 'Hello, World!'
 
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db}
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
