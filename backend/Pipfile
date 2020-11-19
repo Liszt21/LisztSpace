@@ -9,6 +9,8 @@ flask-cors = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-mail = "*"
+click = "*"
+python-dotenv = "*"
 
 [dev-packages]
 flake8 = "*"
