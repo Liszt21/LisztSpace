@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+import json
+import jwt
 from flask import url_for, current_app
 from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,6 +13,7 @@ class User(db.Model):
     username = db.Column(db.String(128), nullable=False)
     name = db.Column(db.String(128))
     password_hash = db.Column(db.String(128), nullable=False)
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -40,3 +44,38 @@ class User(db.Model):
                 data[field] = getattr(self, field)
 
         return data
+
+
+    def ping(self):
+        '''更新用户的最后访问时间'''
+        self.last_seen = datetime.utcnow()
+        db.session.add(self)
+
+    def get_jwt(self, expires_in=3600):
+        '''用户登录后，发放有效的 JWT'''
+        now = datetime.utcnow()
+        payload = {
+            'user_id': self.id,
+            'user_name': self.name if self.name else self.username,
+            'exp': now + timedelta(seconds=expires_in),
+            'iat': now
+        }
+        return jwt.encode(
+            payload,
+            current_app.config['SECRET_KEY'],
+            algorithm='HS256').decode('utf-8')
+
+    @staticmethod
+    def verify_jwt(token):
+        '''验证 JWT 的有效性'''
+        try:
+            payload = jwt.decode(
+                token,
+                current_app.config['SECRET_KEY'],
+                algorithms=['HS256'])
+        except (jwt.exceptions.ExpiredSignatureError,
+                jwt.exceptions.InvalidSignatureError,
+                jwt.exceptions.DecodeError) as e:
+            # Token过期，或被人修改，那么签名验证也会失败
+            return None
+        return User.query.get(payload.get('user_id'))

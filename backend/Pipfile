@@ -12,6 +12,7 @@ flask-mail = "*"
 click = "*"
 python-dotenv = "*"
 flask-httpauth = "*"
+pyjwt = "*"
 
 [dev-packages]
 flake8 = "*"
