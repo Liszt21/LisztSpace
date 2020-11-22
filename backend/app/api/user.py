@@ -6,7 +6,7 @@ from app.models import User
 @bp.route("/user/<int:id>", methods=["GET"])
 def user(id):
     user = User.query.get_or_404(id)
-    return user
+    return jsonify(user.to_dict())
 
 @bp.route("/user", methods=["POST"])
 def register():
@@ -25,13 +25,14 @@ def register():
 
     if User.query.filter_by(username=data.get('username', None)).first():
         message['username'] = 'Please use a different username.'
+
     if message:
         return message
 
     user = User()
-    user.username = username
-    user.password = password
+    user.register(data)
     db.session.add(user)
     db.session.commit()
+    message = "Registration successful"
 
     return message
