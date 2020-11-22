@@ -8,12 +8,17 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
     __table_name__ = "user"
-    _fields = ['username', 'name']
+    _fields = ['username', 'name', 'confirmed', 'email', 'about_me', 'last_seen', 'member_since']
     id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    username = db.Column(db.String(128), nullable=False)
-    name = db.Column(db.String(128))
+    username = db.Column(db.String(64), index=True, unique=True)
+    email = db.Column(db.String(120), index=True, unique=True)
+    name = db.Column(db.String(64))
     password_hash = db.Column(db.String(128), nullable=False)
+    location = db.Column(db.String(64))
+    about_me = db.Column(db.Text())
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
+    confirmed = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -29,6 +34,7 @@ class User(db.Model):
     def register(self, data):
         self.from_dict(data)
         self.set_password(data['password'])
+        self.member_since = datetime.utcnow()
         return True
 
     def from_dict(self, data):
@@ -37,12 +43,11 @@ class User(db.Model):
                 setattr(self, field, data[field])
         return True
 
-    def to_dict(self, fields = ['username', 'name', 'email']):
+    def to_dict(self, fields = None):
         data = {}
-        for field in fields:
+        for field in fields if fields else self._fields:
             if field in self._fields:
                 data[field] = getattr(self, field)
-
         return data
 
 
