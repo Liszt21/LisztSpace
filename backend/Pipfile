@@ -11,6 +11,7 @@ flask-migrate = "*"
 flask-mail = "*"
 click = "*"
 python-dotenv = "*"
+flask-httpauth = "*"
 
 [dev-packages]
 flake8 = "*"

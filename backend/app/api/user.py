@@ -2,8 +2,10 @@ from flask import jsonify, request
 from app.api import bp
 from app.extensions import db
 from app.models import User
+from app.api.auth import basic_auth
 
 @bp.route("/user/<int:id>", methods=["GET"])
+@basic_auth.login_required
 def user(id):
     user = User.query.get_or_404(id)
     return jsonify(user.to_dict())
