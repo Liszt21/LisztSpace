@@ -4,8 +4,4 @@ backend:
     - 5000:5000
   volumes:
     - "./backend:/home/work/backend"
-  entrypoint:
-    - pipenv
-    - run
-    - flask
-    - run
+  entrypoint: "pipenv run python server.py run"
