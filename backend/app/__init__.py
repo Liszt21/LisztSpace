@@ -1,14 +1,15 @@
 from flask import Flask
 from app.api import bp as api_bp
 from app.extensions import cors, db, migrate, mail
+from app.config import config
 
 
-def create_app(config_class=None):
+def create_app(config_name="default"):
     '''Factory Pattern: Create Flask app.'''
     app = Flask(__name__)
 
     # Initialization flask app
-    configure_app(app, config_class)
+    configure_app(app, config_name)
     configure_blueprints(app)
     configure_extensions(app)
     # 不使用 Jinja2，用不到模版过滤器和上下文处理器
@@ -21,8 +22,8 @@ def create_app(config_class=None):
     return app
 
 
-def configure_app(app, config_class):
-    app.config.from_object(config_class)
+def configure_app(app, config_name = "default"):
+    app.config.from_object(config[config_name])
     # 不检查路由中最后是否有斜杠/
     app.url_map.strict_slashes = False
 

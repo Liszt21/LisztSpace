@@ -1,10 +1,9 @@
 from app import create_app
 from app.extensions import db
 from app.models import User
-from config import Config
 import click
 
-app = create_app(Config)
+app = create_app("default")
 
 
 @app.route("/")
