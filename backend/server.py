@@ -21,9 +21,13 @@ def run():
     app.run(host="0.0.0.0", debug=True)
 
 
-@app.cli.command("shell")
-def shell():
-    app.shell()
+@app.cli.command("init_db")
+def init_db():
+    print("Drop all tables")
+    db.drop_all()
+    print("Create all tables")
+    db.create_all()
+    db.session.commit()
 
 
 if __name__ == "__main__":
