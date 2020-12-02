@@ -11,7 +11,7 @@ function Signin() {
   const [ username, setUsername ] = useState("please Sign in")
   const onFinish = (values: UserInfo)=> {
     console.log('Success:', values);
-    axios.get('http://localhost:5000/api/user/1', {
+    axios.get('http://localhost:5000/api/user/info', {
       auth: {
         username: values.username,
         password: values.password
@@ -19,7 +19,6 @@ function Signin() {
     }).then(result => {
       setUsername(result.data.username)
     })
-
   };
 
   const onFinishFailed = (errorInfo: Object)=> {
