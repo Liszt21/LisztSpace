@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import store from "../store"
-import { Provider, connect, useSelector, useDispatch } from "react-redux";
+import { connect, useSelector, useDispatch } from "react-redux";
 
 interface CounterProps {
   readonly value: number;
@@ -54,10 +53,7 @@ function Tools() {
   return (
     <>
       <p>{ping}</p>
-      <Provider store={store}>
-        <CCounter />
-      </Provider>
-      
+      <CCounter />
     </>
   )
 }
