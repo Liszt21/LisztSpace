@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Form, Input, Button, Checkbox, message } from "antd";
-import axios from "axios";
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Form, Input, Button, Checkbox, message } from 'antd';
+import axios from 'axios';
+import qs from 'qs';
 
 interface UserInfo {
   username: string;
@@ -18,9 +19,9 @@ interface RegisterInfo {
 function Signin() {
   const dispatch = useDispatch();
   const onFinish = (values: UserInfo) => {
-    console.log("Success:", values);
+    console.log('Success:', values);
     axios
-      .get("http://localhost:5000/api/user/info", {
+      .get('http://localhost:5000/api/user/info', {
         auth: {
           username: values.username,
           password: values.password,
@@ -28,21 +29,21 @@ function Signin() {
       })
       .then((result) => {
         dispatch({
-          type: "LOGIN",
+          type: 'LOGIN',
           payload: {
             username: result.data.username,
           },
         });
-        message.success("Welcome, " + result.data.username);
+        message.success('Welcome, ' + result.data.username);
       })
       .catch((error) => {
         console.log(error.response);
-        message.error("Error");
+        message.error('Error');
       });
   };
 
   const onFinishFailed = (errorInfo: Object) => {
-    console.log("Failed:", errorInfo);
+    console.log('Failed:', errorInfo);
   };
 
   return (
@@ -55,7 +56,7 @@ function Signin() {
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: 'Please input your username!' }]}
       >
         <Input />
       </Form.Item>
@@ -63,7 +64,7 @@ function Signin() {
       <Form.Item
         label="Password"
         name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
+        rules={[{ required: true, message: 'Please input your password!' }]}
       >
         <Input.Password />
       </Form.Item>
@@ -91,7 +92,11 @@ function Register() {
       };
       console.log(data);
       axios
-        .post("http://localhost:5000/api/user", data)
+        .post('http://localhost:5000/api/user', qs.stringify(data), {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        })
         .then((res) => {
           console.log(res);
           console.log(res.data);
@@ -106,28 +111,28 @@ function Register() {
       <Form.Item
         label="Username"
         name="username"
-        rules={[{ required: true, message: "Please provide username" }]}
+        rules={[{ required: true, message: 'Please provide username' }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Email address"
         name="email"
-        rules={[{ required: true, message: "Please provide email" }]}
+        rules={[{ required: true, message: 'Please provide email' }]}
       >
         <Input />
       </Form.Item>
       <Form.Item
         label="Password"
         name="password"
-        rules={[{ required: true, message: "Please input your password!" }]}
+        rules={[{ required: true, message: 'Please input your password!' }]}
       >
         <Input.Password />
       </Form.Item>
       <Form.Item
         label="Confirm"
         name="confirm"
-        rules={[{ required: true, message: "Please confirm your password!" }]}
+        rules={[{ required: true, message: 'Please confirm your password!' }]}
       >
         <Input.Password />
       </Form.Item>
