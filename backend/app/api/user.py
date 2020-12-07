@@ -2,17 +2,17 @@ from flask import jsonify, request, g
 from app.api import bp
 from app.extensions import db
 from app.models import User
-from app.api.auth import basic_auth, token_auth, auth
+from app.api.auth import auth
 
 
 @bp.route("/user/info", methods=["GET"])
 @auth.login_required
-def user():
+def user_info():
     return jsonify(g.current_user.to_dict())
 
 
 @bp.route("/user/list")
-def all_user():
+def user_list():
     result = {"users": [user.username for user in User.query.all()]}
     result["count"] = len(result["users"])
     return result
@@ -27,24 +27,47 @@ def signin():
 
 @bp.route("/user", methods=["POST"])
 def register():
-    message = {}
-    if "username" not in request.form or not request.form.get("username", None).strip():
-        message["username"] = "Please provide a valid username."
-    pattern = '^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
-    if "password" not in request.form or not request.form.get("password", None).strip():
-        message["password"] = "Please provide a valid password."
+    body = request.get_json()
+    # valid
+    if not body:
+        return {"message": "Empty body"}
 
-    if User.query.filter_by(username=request.form.get("username", None)).first():
-        message["username"] = "Please use a different username."
+    if "username" not in body.keys():
+        return {"message": "Please provide username!"}, 400
+    elif User.query.filter_by(username=body["username"]).first():
+        return {
+            "message": "Username: {} already exist. Please use a different username.".format(
+                body["username"]
+            )
+        }, 409
 
-    if message:
-        return message
+    if "password" not in body.keys():
+        return {"message": "Please provide password!"}, 400
+
+    if "email" not in body.keys():
+        return {"message": "Please provide email address!"}, 400
 
     user = User()
-    user.register(request.form)
+    user.register(body)
     db.session.add(user)
     db.session.commit()
-    message = "Registration successful"
+    token = user.get_jwt()
+
+    return {"message": "Registeration successful!", "token": token}
+
+
+@bp.route("/user", methods=["PUT"])
+@auth.login_required
+def update():
+    body = request.get_json()
+    if not body:
+        return {"message": "Empty body, nothing changed!"}, 400
+    message = g.current_user.update(body)
+    if "new_password" in body.keys() and "old_password" in body.keys() and g.current_user.check_password(body["old_password"]) and body["new_password"] != body["old_password"]:
+        g.current_user.set_password(body["new_password"])
+        message['password'] = "Updated!!!"
+
+    db.session.commit()
 
     return message
 
@@ -55,4 +78,4 @@ def delete_user():
     """删除一个用户"""
     db.session.delete(g.current_user)
     db.session.commit()
-    return "", 204
+    return "User: {} deleted!!!".format(g.current_user.username)
