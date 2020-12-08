@@ -36,7 +36,7 @@ def register():
         return {"message": "Please provide username!"}, 400
     elif User.query.filter_by(username=body["username"]).first():
         return {
-            "message": "Username: {} already exist. Please use a different username.".format(
+            "message": "Username {} already exist. Please use another.".format(
                 body["username"]
             )
         }, 409
@@ -63,9 +63,14 @@ def update():
     if not body:
         return {"message": "Empty body, nothing changed!"}, 400
     message = g.current_user.update(body)
-    if "new_password" in body.keys() and "old_password" in body.keys() and g.current_user.check_password(body["old_password"]) and body["new_password"] != body["old_password"]:
+    if (
+        "new_password" in body.keys()
+        and "old_password" in body.keys()
+        and g.current_user.check_password(body["old_password"])
+        and body["new_password"] != body["old_password"]
+    ):
         g.current_user.set_password(body["new_password"])
-        message['password'] = "Updated!!!"
+        message["password"] = "Updated!!!"
 
     db.session.commit()
 
