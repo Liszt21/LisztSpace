@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Form, Input, Button, Checkbox, message } from 'antd';
-import axios from 'axios';
-import qs from 'qs';
+import { useSelector } from 'react-redux';
+import { Form, Input, Button, Checkbox } from 'antd';
+import { login, register } from '../api';
 
 interface UserInfo {
   username: string;
@@ -16,30 +15,9 @@ interface RegisterInfo {
   confirm: string;
 }
 
-function Signin() {
-  const dispatch = useDispatch();
+function Login() {
   const onFinish = (values: UserInfo) => {
-    console.log('Success:', values);
-    axios
-      .get('http://localhost:5000/api/user/info', {
-        auth: {
-          username: values.username,
-          password: values.password,
-        },
-      })
-      .then((result) => {
-        dispatch({
-          type: 'LOGIN',
-          payload: {
-            username: result.data.username,
-          },
-        });
-        message.success('Welcome, ' + result.data.username);
-      })
-      .catch((error) => {
-        console.log(error.response);
-        message.error('Error');
-      });
+    login(values.username, values.password);
   };
 
   const onFinishFailed = (errorInfo: Object) => {
@@ -85,25 +63,7 @@ function Signin() {
 function Register() {
   const onFinish = (values: RegisterInfo) => {
     if (values.password === values.confirm) {
-      const data = {
-        username: values.username,
-        password: values.password,
-        email: values.email,
-      };
-      console.log(data);
-      axios
-        .post('http://localhost:5000/api/user', qs.stringify(data), {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          console.log(res.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      register(values.username, values.password, values.email);
     }
   };
   return (
@@ -162,7 +122,7 @@ function User() {
         </div>
       ) : (
         <div>
-          <Signin />
+          <Login />
           Doesn't have an account?
           <Button type="link" onClick={() => setRegister(true)}>
             Register

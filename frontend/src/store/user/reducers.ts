@@ -1,19 +1,31 @@
 export const initUserState = {
-  username: "username"
-}
+  id: undefined,
+  username: undefined,
+  email: undefined,
+  nation: undefined,
+  hobby: undefined,
+  major: undefined,
+  about_me: undefined,
+  token: undefined,
+  name: undefined,
+};
 
-const User = (state = initUserState, action: any): UserState => {
-  switch(action.type){
-    case "LOGIN":
-      console.log("login");
+const User = (state: UserState = initUserState, action: any): UserState => {
+  switch (action.type) {
+    case 'LOGIN':
+      console.log('login');
       return {
-        ...action.payload
-      }
-    case "LOGOUT":
+        ...action.payload,
+      };
+    case 'UPDATE':
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case 'LOGOUT':
     default:
-      console.log("logout")
-      return initUserState
+      return initUserState;
   }
-}
+};
 
-export default User
+export default User;

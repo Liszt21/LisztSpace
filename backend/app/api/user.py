@@ -5,9 +5,9 @@ from app.models import User
 from app.api.auth import auth
 
 
-@bp.route("/user/info", methods=["GET"])
+@bp.route("/user", methods=["GET"])
 @auth.login_required
-def user_info():
+def user():
     return jsonify(g.current_user.to_dict())
 
 
