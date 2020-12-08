@@ -111,8 +111,9 @@ function User() {
 
   return (
     <>
-      {user.username}
-      {register ? (
+      {user.username ? (
+        user.username
+      ) : register ? (
         <div>
           <Register />
           Already have an account?
