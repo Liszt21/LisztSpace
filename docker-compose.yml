@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - 5000:5000
+    volumes:
+      - "./backend:/home/work/backend"
+    command: ["python", "server.py", "run"]
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 3000:3000
+    volumes:
+      - "./frontend/src:/home/work/frontend/src"
+    command: ["start"]
