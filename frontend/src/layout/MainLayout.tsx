@@ -1,36 +1,33 @@
 import React, { useState } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar, Input, Space } from 'antd';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import Home from '../views/Home';
 import Tools from '../views/Tools';
 import About from '../views/About';
 
 const { Header, Content, Sider, Footer } = Layout;
+const { Search } = Input;
 
 function Main() {
   return (
     <Switch>
       <Route exact path="/">
-        {' '}
-        <Home />{' '}
+        <Home />
       </Route>
       <Route path="/tools">
-        {' '}
-        <Tools />{' '}
+        <Tools />
       </Route>
       <Route path="/about">
-        {' '}
-        <About />{' '}
+        <About />
       </Route>
     </Switch>
   );
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-
   .content {
     background-color: #fff;
     min-height: calc(100vh - 134px);
@@ -43,28 +40,36 @@ const MainLayout = () => {
     <Wrapper>
       <Layout>
         <Header>
-          <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-            {React.createElement(
-              sider ? MenuUnfoldOutlined : MenuFoldOutlined,
-              {
-                className: 'trigger',
-                onClick: () => setSider(!sider),
-              }
-            )}
-            <Menu.Item key="1">
-              <Link to="/">Home</Link>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Link to="/tool">Tool</Link>
-            </Menu.Item>
-            <Menu.Item key="3">
-              <Link to="/about">About</Link>
-            </Menu.Item>
-          </Menu>
+          <Space>
+            {React.createElement(sider ? MenuUnfoldOutlined : MenuFoldOutlined, {
+              className: 'trigger',
+              onClick: () => setSider(!sider),
+            })}
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+              <Menu.Item key="1">
+                <Link to="/">Home</Link>
+              </Menu.Item>
+              <Menu.Item key="2">
+                <Link to="/tool">Tool</Link>
+              </Menu.Item>
+              <Menu.Item key="3">
+                <Link to="/about">About</Link>
+              </Menu.Item>
+            </Menu>
+            <Search
+              className="searcher"
+              placeholder="search"
+              allowClear
+              enterButton="Search"
+              style={{ verticalAlign: 'middle' }}
+            />
+            <Avatar icon={<UserOutlined />} />
+            <span>User</span>
+          </Space>
         </Header>
         <Layout>
           {sider ? <Sider>Sider</Sider> : null}
-          <Content className="content">
+          <Content className="content" style={{ padding: 24 }}>
             <Main></Main>
           </Content>
         </Layout>
