@@ -2,6 +2,6 @@
 
 My personal site
 
-## vue
+## react
 
 ## flask
